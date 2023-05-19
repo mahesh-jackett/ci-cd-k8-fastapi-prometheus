@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     name: Deploy to AWS EC2
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout code
@@ -25,9 +25,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@ec2-18-181-77-247.ap-northeast-1.compute.amazonaws.com << EOF
           sudo usermod -aG docker ubuntu
-          newgrp docker
-          git clone https://github.com/mahesh-jackett/actions.git
+          git clone git@github.com:mahesh-jackett/actions.git
           cd actions
-          docker build -t your-app .
-          docker run -d -p 8000:8000 your-app
+          newgrp docker && docker build -t your-app . && docker run -d -p 8000:8000 your-app
         EOF
