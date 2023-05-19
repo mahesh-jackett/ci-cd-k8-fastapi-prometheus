@@ -23,7 +23,7 @@ jobs:
 
     - name: SSH and Deploy
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@your-ec2-public-dns << EOF
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@ec2-18-181-77-247.ap-northeast-1.compute.amazonaws.com << EOF
           git clone https://github.com/mahesh-jackett/actions.git
           cd actions
           docker build -t your-app .
