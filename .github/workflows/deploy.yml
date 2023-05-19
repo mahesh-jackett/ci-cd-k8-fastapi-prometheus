@@ -1,0 +1,31 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to AWS EC2
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh/
+        echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan ec2-18-181-77-247.ap-northeast-1.compute.amazonaws.com >> ~/.ssh/known_hosts
+
+    - name: SSH and Deploy
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@your-ec2-public-dns << EOF
+          git clone https://github.com/mahesh-jackett/actions.git
+          cd actions
+          docker build -t your-app .
+          docker run -d -p 8000:8000 your-app
+        EOF
