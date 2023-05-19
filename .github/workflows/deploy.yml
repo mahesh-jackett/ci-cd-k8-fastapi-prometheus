@@ -25,7 +25,6 @@ jobs:
     - name: SSH and Deploy
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@"${{secrets.EC2_PUBLIC_DNS}}" << EOF
-          sudo usermod -aG docker ubuntu
           git clone https://${{ secrets.REPO_CLONE_ACCESS_TOKEN }}@github.com/mahesh-jackett/actions.git
           cd actions
           docker stop fastapi_container
