@@ -28,5 +28,8 @@ jobs:
           sudo usermod -aG docker ubuntu
           git clone https://${{ secrets.REPO_CLONE_ACCESS_TOKEN }}@github.com/mahesh-jackett/actions.git
           cd actions
-          newgrp docker && docker build -t your-app . && docker run -d -p 8000:8000 your-app
+          docker stop fastapi_container
+          docker rm fastapi_container
+          docker build -t fastapi_image .
+          docker run -d --name fastapi_container -p 8000:8000 fastapi_image
         EOF
