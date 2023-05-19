@@ -26,7 +26,8 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@"${{secrets.EC2_PUBLIC_DNS}}" << EOF
           git clone https://${{ secrets.REPO_CLONE_ACCESS_TOKEN }}@github.com/mahesh-jackett/actions.git
-          cd actions
+          cd ./actions
+          git pull https://${{ secrets.REPO_CLONE_ACCESS_TOKEN }}@github.com/mahesh-jackett/actions.git
           docker stop fastapi_container
           docker rm fastapi_container
           docker build -t fastapi_image .
