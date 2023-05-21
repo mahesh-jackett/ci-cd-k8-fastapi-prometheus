@@ -1,21 +1,46 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1 # The API version to use
+kind: Deployment    # Type of the Kubernetes resource
 metadata:
-  name: fastapi-app-deployment
+  name: fastapi-app-deployment  # The name of the Deployment
   labels:
-    app: fastapi-app
+    app: fastapi-app            # Labels to help organize and select resources
 spec:
-  replicas: 2
+  replicas: 2  # The number of Pods to ensure is running
   selector:
-    matchLabels:
+    matchLabels:  # The label selector for which Pods are managed by this Deployment
       app: fastapi-app
+  strategy:
+    type: RollingUpdate   # The type of deployment strategy
+    rollingUpdate:        # The rolling update strategy details
+      maxUnavailable: 1  # Max number of unavailable pods when updating
+      maxSurge: 1        # Max extra pods that can be created
   template:
     metadata:
       labels:
         app: fastapi-app
     spec:
-      containers:
+      containers:  # The specification of the Docker containers to run
       - name: fastapi-app-container
         image: maheshjackett/fastapi-image-test-k8:latest
         ports:
         - containerPort: 8000
+        resources:  # The resource requests and limits for the container
+          requests:
+            cpu: "100m" # 10% of a single CPU core.
+            memory: "100Mi" # 100 Mebibytes (2^20 bytes) => 100 * 2^20 bytes = 104857600 bytes
+          limits:
+            cpu: "500m"
+            memory: "500Mi"
+        readinessProbe: # Probe to check if the application is ready to serve traffic
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:  # Probe to check if the application is alive or dead
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+
