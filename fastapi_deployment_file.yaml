@@ -45,4 +45,21 @@ spec:
             port: 8000
           initialDelaySeconds: 15
           periodSeconds: 20
+        env: # Set environment variables
+        - name: MONGODB_URL # This the environment variable which will be referenced in os.getenv() in the main.py
+          valueFrom: # It gets it's value from the configmap which in turns gets it's value from the "mongodb-service" which is running at some internal address
+            configMapKeyRef:
+              name: mongodb-configmap
+              key: database_url
+        - name: MONGODB_USERNAME # Another env variable which holds value for the Same uername used in the secretss
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+
 
