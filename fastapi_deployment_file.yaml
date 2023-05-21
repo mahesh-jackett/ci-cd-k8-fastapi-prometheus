@@ -1,3 +1,5 @@
+# This the Deployment file to create Pod for the FastAPI application. Think of it as similar way of manually creating Docker images for the app
+
 apiVersion: apps/v1 # The API version to use
 kind: Deployment    # Type of the Kubernetes resource
 metadata:
@@ -14,7 +16,7 @@ spec:
     rollingUpdate:        # The rolling update strategy details
       maxUnavailable: 1  # Max number of unavailable pods when updating
       maxSurge: 1        # Max extra pods that can be created
-  template:
+  template: # This the POD Configuration (where app is running) has it's own configuration. It is same as where you build Docler image etc
     metadata:
       labels:
         app: fastapi-app

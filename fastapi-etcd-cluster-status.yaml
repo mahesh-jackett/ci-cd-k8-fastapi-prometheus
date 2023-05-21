@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"fastapi-app"},"name":"fastapi-app-deployment","namespace":"default"},"spec":{"replicas":2,"selector":{"matchLabels":{"app":"fastapi-app"}},"strategy":{"rollingUpdate":{"maxSurge":1,"maxUnavailable":1},"type":"RollingUpdate"},"template":{"metadata":{"labels":{"app":"fastapi-app"}},"spec":{"containers":[{"image":"maheshjackett/fastapi-image-test-k8:latest","livenessProbe":{"httpGet":{"path":"/","port":8000},"initialDelaySeconds":15,"periodSeconds":20},"name":"fastapi-app-container","ports":[{"containerPort":8000}],"readinessProbe":{"httpGet":{"path":"/","port":8000},"initialDelaySeconds":5,"periodSeconds":10},"resources":{"limits":{"cpu":"500m","memory":"500Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}}]}}}}
+  creationTimestamp: "2023-05-21T17:56:28Z"
+  generation: 1
+  labels:
+    app: fastapi-app
+  name: fastapi-app-deployment
+  namespace: default
+  resourceVersion: "7321"
+  uid: 828de176-9fa5-43e1-8369-be1838a2cbd8
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: fastapi-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: fastapi-app
+    spec:
+      containers:
+      - image: maheshjackett/fastapi-image-test-k8:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: fastapi-app-container
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 2
+  conditions:
+  - lastTransitionTime: "2023-05-21T17:56:49Z"
+    lastUpdateTime: "2023-05-21T17:56:49Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2023-05-21T17:56:28Z"
+    lastUpdateTime: "2023-05-21T17:56:59Z"
+    message: ReplicaSet "fastapi-app-deployment-86d89c5f9f" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 2
+  replicas: 2
+  updatedReplicas: 2

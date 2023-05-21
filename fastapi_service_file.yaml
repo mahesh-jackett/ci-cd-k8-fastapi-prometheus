@@ -1,3 +1,5 @@
+# This is referencing to the FastApi Pod and is a service to it. Service makes it possible to handle IP addresses, incoming requests forwardong etc
+
 apiVersion: v1  # The API version to use
 kind: Service   # Type of the Kubernetes resource
 metadata:
