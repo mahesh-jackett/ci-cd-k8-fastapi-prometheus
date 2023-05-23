@@ -7,7 +7,7 @@ metadata:
   labels:
     app: fastapi-app         # Labels to help organize and select resources
 spec:
-  type: NodePort  # The type of Service
+  type: LoadBalancer  # The type of Service LoadBalancer means it's exposed to external IP
   selector:
     app: fastapi-app  # The label selector for which Pods this Service should target
   ports:
