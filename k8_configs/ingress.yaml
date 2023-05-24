@@ -31,3 +31,14 @@ spec:
             name: mongo-express-service
             port:
               number: 8081
+
+  - host: dashboard.kibana
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: kibana-service
+            port:
+              number: 5601

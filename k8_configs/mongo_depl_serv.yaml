@@ -2,13 +2,29 @@
 # This creates an "INTERNAL" service where applications outside the cluster can't talk to this Service
 # Internal apps can connect to it using the URL present in the ConfigMap file
 
-apiVersion: apps/v1
-kind: Deployment
+
+# This code creates a persistant storage so even if the system restarts, the data is preserved
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: mongodb-deployment
+  name: mongodb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 128Mi # 128 MB storage
+
+---
+# StatefulSet Code (not Deployment)
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-stateful
   labels:
     app: mongodb
 spec:
+  serviceName: "mongodb-service"
   replicas: 1 # We usually don't want replicas of DataBases as they can create issues
   selector:
     matchLabels:
@@ -28,19 +44,32 @@ spec:
           valueFrom: # Where to Search in secret files
             secretKeyRef: # What is the process to find that username?
               name: mongodb-secret # Search all the secrets and find which has "mongodb-secret" in it's metadata. In our case, it is mongo_secrets.yaml file
-              key: mongo-root-username # If the file is found, use the vallue which is given to the key named "mongo-root-username" in that file
+              key: mongo-root-username # If the file is found, use the value which is given to the key named "mongo-root-username" in that file
         - name: MONGO_INITDB_ROOT_PASSWORD
           valueFrom: 
             secretKeyRef:
               name: mongodb-secret
               key: mongo-root-password
+        volumeMounts: # Persistent Data
+        - name: mongodb-data
+          mountPath: /data/db # this is the directory inside the container where MongoDB stores data
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 256Mi # 256 MB storage
+
 ---
-# 3 dash means one file has ended and the this is the second one, Service file for MongoDB
+# Service file for MongoDB
 apiVersion: v1
 kind: Service
 metadata:
   name: mongodb-service
 spec:
+  clusterIP: None
   selector:
     app: mongodb
   ports:

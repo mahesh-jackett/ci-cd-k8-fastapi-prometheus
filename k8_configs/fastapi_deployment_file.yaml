@@ -1,9 +1,10 @@
 # This the Deployment file to create Pod for the FastAPI application. Think of it as similar way of manually creating Docker images for the app
+# You can use these extra things like Resource management etc to all of the deployments
 
 apiVersion: apps/v1 # The API version to use
 kind: Deployment    # Type of the Kubernetes resource
 metadata:
-  name: fastapi-app-deployment  # The name of the Deployment
+  name: fastapi-deployment  # The name of the Deployment
   labels:
     app: fastapi-app            # Labels to help organize and select resources
 spec:
@@ -35,15 +36,15 @@ spec:
             memory: "500Mi"
         readinessProbe: # Probe to check if the application is ready to serve traffic
           httpGet:
-            path: /
+            path: /health
             port: 8000
-          initialDelaySeconds: 5
-          periodSeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 20
         livenessProbe:  # Probe to check if the application is alive or dead
           httpGet:
-            path: /
+            path: /health
             port: 8000
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
           periodSeconds: 20
         env: # Set environment variables
         - name: MONGODB_URL # This the environment variable which will be referenced in os.getenv() in the main.py

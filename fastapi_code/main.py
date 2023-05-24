@@ -42,3 +42,7 @@ async def get_user(name: str):
     user["_id"] = str(user["_id"])
     return user
 
+@app.get("/health")
+def health_check():
+    return {"status": "OK"}
+
